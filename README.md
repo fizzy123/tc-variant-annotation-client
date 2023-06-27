@@ -22,6 +22,10 @@ print(tsv)
 As a command line tool:
 ```
 > tvac-annotate-variants variants.txt
+```
+
+For either of these, the expected output for the provided `variants.txt` file should be:
+```
 Variant NC_000001.11:g.40819893T>A Encountered Annotation Exception
 Exception:Annotation website returned bad response
 status_code:400
@@ -43,6 +47,10 @@ NC_000001.11:g.215674515G>A     GRCh38  1       215674515       215674515       
 - Expose other functions in CLI tool
 - Add CI/CD scripts
 - Add linting
+
+I consider CLI tool UI/UX improvement to be the top priority just cause that has the most impact on how easy it is for people to use it.
+
+My next priority is CI/CD since that's very valuable for further development, which linting specifications also tie into
 
 #Questions
 ##Suppose we now want to create a web microservice that accepts a GET (or POST) request with the variant in HGVS format and returns the annotation as JSON. What tools or standards would you implement this? How does your code structure change?
