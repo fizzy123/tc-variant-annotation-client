@@ -47,6 +47,23 @@ class TestVariantAnnotationClient(unittest.TestCase):
             self.assertEqual(annotated_row, '''variant1\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgene_symbol''')
             mock_get.assert_called_once_with("https://test.com/variant1", headers={'Content-type': 'application/json'})
 
+    def test_annotate_variant_with_error(self):
+        error_text = "error blah error"
+        mock_request_dict = {
+            "https://test.com/variant1": {
+                "text": error_text,
+                "status_code": 400,
+            }
+        }
+        with patch('requests.get') as mock_get:
+            mock_get.side_effect = util.mocked_requests_get_wrapper(mock_request_dict)
+            client = VariantAnnotationClient(TEST_URL)
+            with self.assertRaises(EnsemblError) as context:
+                annotated_row = client.annotate_variant("variant1")
+                self.assertEqual(context.exception.status_code, 400)
+                self.assertEqual(context.exception.error_text, error_text)
+            mock_get.assert_called_once_with("https://test.com/variant1", headers={'Content-type': 'application/json'})
+
     def test_annotate_file(self):
         with patch.object(VariantAnnotationClient, 'parse_variants') as mock_parse_variants:
             with patch.object(VariantAnnotationClient, 'annotate_variant') as mock_annotate_variant:

@@ -30,7 +30,7 @@ class VariantAnnotationClient:
         response = requests.get(self.variant_endpoint.format(variant=variant), headers={
             'Content-type':'application/json'
         })
-        if !response.ok:
+        if not response.ok:
             raise EnsemblError(response.status_code, response.text)
         data = response.json()
         assembly_name = data[0]["assembly_name"]
