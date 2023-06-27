@@ -4,19 +4,39 @@ from client.client import VariantAnnotationClient, EnsemblError
 from tests import util
 
 TEST_FILENAME = "variants.txt"
-TEST_FILE = '''variant1
-variant2
-variant3'''
+
 
 TEST_URL = "https://test.com/{variant}"
 
 class TestVariantAnnotationClient(unittest.TestCase):
     def test_parse_variants(self):
+        # This test string includes whitespace
+        TEST_FILE = '''variant1
+variant2    
+variant3'''
         m = mock_open(read_data=TEST_FILE)
         client = VariantAnnotationClient(TEST_URL)
         with patch('builtins.open', m, create=True):
             variants = client.parse_variants(TEST_FILENAME)
-            self.assertEqual(variants, TEST_FILE.split("\n"))
+            self.assertEqual(variants, [
+                "variant1",
+                "variant2",
+                "variant3",
+            ])
+        m.assert_called_once_with("variants.txt", "r")
+
+    def test_parse_variants_with_duplicates(self):
+        TEST_FILE = '''variant1
+variant1
+variant3'''
+        m = mock_open(read_data=TEST_FILE)
+        client = VariantAnnotationClient(TEST_URL)
+        with patch('builtins.open', m, create=True):
+            variants = client.parse_variants(TEST_FILENAME)
+            self.assertEqual(variants, [
+                "variant1",
+                "variant3"
+            ])
         m.assert_called_once_with("variants.txt", "r")
 
     def test_annotate_variant(self):
@@ -108,7 +128,7 @@ variant3\tattr1\tattr2\tattr3''')
                 client = VariantAnnotationClient(TEST_URL)
                 with patch('builtins.print') as mock_print:
                     tsv = client.annotate_file(TEST_FILENAME)
-                    mock_print.assert_called_once_with("Variant variant2 Encountered Annotation Exception\nException:Annotation website returned bad response\nstatus_code:500\nerror:TEST EXCEPTION")
+                    mock_print.assert_called_once_with("Variant variant2 Encountered Annotation Exception\nException:Annotation website returned bad response\nstatus_code:500\nerror:TEST EXCEPTION\n")
 
                 self.assertEqual(mock_annotate_variant.call_args_list[0], call("variant1"))
                 self.assertEqual(mock_annotate_variant.call_args_list[1], call("variant2"))

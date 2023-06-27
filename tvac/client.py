@@ -13,7 +13,6 @@ class EnsemblError(Exception):
     def __str__(self):
         return f"Annotation website returned bad response\nstatus_code:{self.status_code}\nerror:{self.error_text}"
 
-
 class VariantAnnotationClient:
     def __init__(self, variant_endpoint=VARIANT_ENDPOINT):
         self.variant_endpoint = variant_endpoint
@@ -23,7 +22,11 @@ class VariantAnnotationClient:
         variants = file_object.readlines()
         file_object.close()
         # remove all empty lines
-        return [variant.strip() for variant in variants if variant.strip() != ""]
+        variants = [variant.strip() for variant in variants if variant.strip() != ""]
+        variant_hash = {}
+        for variant in variants:
+            variant_hash[variant] = True
+        return list(variant_hash.keys())
 
     def annotate_variant(self, variant):
         response = requests.get(self.variant_endpoint.format(variant=variant), headers={
@@ -59,5 +62,5 @@ class VariantAnnotationClient:
                 annotation = self.annotate_variant(variant)
                 annotations.append(annotation)
             except EnsemblError as e:
-                print(f"Variant {variant} Encountered Annotation Exception\nException:{str(e)}")
+                print(f"Variant {variant} Encountered Annotation Exception\nException:{str(e)}\n")
         return "\n".join(annotations)

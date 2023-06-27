@@ -16,4 +16,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "requests",
+]
 
+[project.scripts]
+tvac = "tvac.cli:main"
