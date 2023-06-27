@@ -2,6 +2,19 @@ import requests
 
 VARIANT_ENDPOINT = "http://rest.ensembl.org/vep/human/hgvs/{variant}" 
 
+class EnsemblError(Exception):
+    def __init__(self, status_code, error_text):            
+        # Call the base class constructor with the parameters it needs
+        super().__init__(error_text)
+            
+        # Now for your custom code...
+        self.status_code = status_code
+        self.error_text = error_text
+
+    def __str__(self):
+        return f"Annotation website returned bad response\nstatus_code:{self.status_code}\nerror:{self.error_text}"
+
+
 class VariantAnnotationClient:
     def __init__(self, variant_endpoint=VARIANT_ENDPOINT):
         self.variant_endpoint = variant_endpoint
@@ -18,7 +31,7 @@ class VariantAnnotationClient:
             'Content-type':'application/json'
         })
         if response.status_code != 200:
-            raise Exception(f"Annotation website returned bad response\nstatus_code:{response.status_code}\nerror:{response.text}")
+            raise EnsemblError(response.status_code, response.text)
         data = response.json()
         assembly_name = data[0]["assembly_name"]
         seq_region_name = data[0]["seq_region_name"]
@@ -46,6 +59,6 @@ class VariantAnnotationClient:
             try:
                 annotation = self.annotate_variant(variant)
                 annotations.append(annotation)
-            except Exception as e:
+            except EnsemblError as e:
                 print(f"Variant {variant} Encountered Annotation Exception\nException:{str(e)}")
         return "\n".join(annotations)
