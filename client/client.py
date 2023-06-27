@@ -27,7 +27,7 @@ class VariantAnnotationClient:
 
     def annotate_variant(self, variant):
         response = requests.get(self.variant_endpoint.format(variant=variant), headers={
-            'Content-type':'application/json'
+            'Content-type':'application/json' # if this is missing, the response will not be in json format
         })
         if not response.ok:
             raise EnsemblError(response.status_code, response.text)

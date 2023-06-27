@@ -40,12 +40,12 @@ class TestVariantAnnotationClient(unittest.TestCase):
                 "status_code": 200,
             }
         }
+        client = VariantAnnotationClient(TEST_URL)
         with patch('requests.get') as mock_get:
             mock_get.side_effect = util.mocked_requests_get_wrapper(mock_request_dict)
-            client = VariantAnnotationClient(TEST_URL)
             annotated_row = client.annotate_variant("variant1")
-            self.assertEqual(annotated_row, '''variant1\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgene_symbol''')
             mock_get.assert_called_once_with("https://test.com/variant1", headers={'Content-type': 'application/json'})
+        self.assertEqual(annotated_row, '''variant1\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgene_symbol''')
 
     def test_annotate_variant_with_error(self):
         error_text = "error blah error"
@@ -55,9 +55,9 @@ class TestVariantAnnotationClient(unittest.TestCase):
                 "status_code": 400,
             }
         }
+        client = VariantAnnotationClient(TEST_URL)
         with patch('requests.get') as mock_get:
             mock_get.side_effect = util.mocked_requests_get_wrapper(mock_request_dict)
-            client = VariantAnnotationClient(TEST_URL)
             with self.assertRaises(EnsemblError) as context:
                 annotated_row = client.annotate_variant("variant1")
                 self.assertEqual(context.exception.status_code, 400)
@@ -81,16 +81,15 @@ class TestVariantAnnotationClient(unittest.TestCase):
                 with patch('builtins.print') as mock_print:
                     tsv = client.annotate_file(TEST_FILENAME)
                     mock_print.assert_not_called()
-
-                self.assertEqual(tsv, '''variant\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgenes
-variant1\tattr1\tattr2\tattr3
-variant2\tattr1\tattr2\tattr3
-variant3\tattr1\tattr2\tattr3''')
                 self.assertEqual(mock_annotate_variant.call_args_list[0], call("variant1"))
                 self.assertEqual(mock_annotate_variant.call_args_list[1], call("variant2"))
                 self.assertEqual(mock_annotate_variant.call_args_list[2], call("variant3"))
                 self.assertEqual(mock_annotate_variant.call_count, 3)
                 mock_parse_variants.assert_called_once_with(TEST_FILENAME)
+            self.assertEqual(tsv, '''variant\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgenes
+variant1\tattr1\tattr2\tattr3
+variant2\tattr1\tattr2\tattr3
+variant3\tattr1\tattr2\tattr3''')
                     
 
     def test_annotate_file_with_error(self):
@@ -110,14 +109,15 @@ variant3\tattr1\tattr2\tattr3''')
                 with patch('builtins.print') as mock_print:
                     tsv = client.annotate_file(TEST_FILENAME)
                     mock_print.assert_called_once_with("Variant variant2 Encountered Annotation Exception\nException:Annotation website returned bad response\nstatus_code:500\nerror:TEST EXCEPTION")
-                self.assertEqual(tsv, '''variant\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgenes
-variant1\tattr1\tattr2\tattr3
-variant3\tattr1\tattr2\tattr3''')
+
                 self.assertEqual(mock_annotate_variant.call_args_list[0], call("variant1"))
                 self.assertEqual(mock_annotate_variant.call_args_list[1], call("variant2"))
                 self.assertEqual(mock_annotate_variant.call_args_list[2], call("variant3"))
                 self.assertEqual(mock_annotate_variant.call_count, 3)
                 mock_parse_variants.assert_called_once_with(TEST_FILENAME)
+            self.assertEqual(tsv, '''variant\tassembly_name\tseq_region_name\tstart\tend\tmost_severe_consequence\tstrand\tgenes
+variant1\tattr1\tattr2\tattr3
+variant3\tattr1\tattr2\tattr3''')
 
 if __name__ == '__main__':
         unittest.main()
