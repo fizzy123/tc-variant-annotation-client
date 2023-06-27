@@ -1,16 +1,16 @@
-### Description
+#Description
 This package provides both functions and a command line tool to assist in annotating variants
 
-### Features
+#Features
 - Can be used as a package or command line tool
 - Provides intermediate functions for more flexibility
 - Remove duplicate variants
 - Skips variant names that cause errors
 
-### Installation
+#Installation
 `pip install git+ssh://git@github.com/fizzy123/tc-variant-annotation-client.git@822a93f66b0cdc636436e7114361bd48fa9a286d`
 
-### Usage
+#Usage
 As a package:
 ```
 from tvac.client import VariantAnnotationClient
@@ -35,19 +35,20 @@ NC_000006.12:g.152387156G>A     GRCh38  6       152387156       152387156       
 NC_000001.11:g.215674515G>A     GRCh38  1       215674515       215674515       missense_variant        1       USH2A
 ```
 
-### Weaknesses
+#Weaknesses
 - If an invalid Ensembl response is provided without an accompanying 400 or 500 status code, the tsv will not be formatted correctly 
 
-### Next Steps
-- Add linting
-- Add CI/CD scripts
+#Next Steps
 - More tooltips/error handlers in CLI tool
+- Expose other functions in CLI tool
+- Add CI/CD scripts
+- Add linting
 
-### Questions
-## Suppose we now want to create a web microservice that accepts a GET (or POST) request with the variant in HGVS format and returns the annotation as JSON. What tools or standards would you implement this? How does your code structure change?
+#Questions
+##Suppose we now want to create a web microservice that accepts a GET (or POST) request with the variant in HGVS format and returns the annotation as JSON. What tools or standards would you implement this? How does your code structure change?
 We could implement a web microservice with Flask or Django and simply import this package in order to annotate these variants.
 
-## Start-ups and start-up employees must balance quick and satisfactory (i.e., good enough) results with more deliberate and reliable results. The same is true for code. You do not have enough time to write the ultimate answer to variant annotation. What is important to get "right" now and what can be deferred?
+##Start-ups and start-up employees must balance quick and satisfactory (i.e., good enough) results with more deliberate and reliable results. The same is true for code. You do not have enough time to write the ultimate answer to variant annotation. What is important to get "right" now and what can be deferred?
 Here is a list of things that could potentially be deferred, with the best things to defer at the beginning and the worst things to defer at the end:
 - Features that are not strictly necessary to solve the problem at hand
 - Functionality that provides wider support, but will not necessarily be used for the current application
@@ -58,8 +59,8 @@ Here is a list of things that could potentially be deferred, with the best thing
 - Bugs that can currently occur, but will not occur in the current use case
 - Security Bugs
 
-- What's the simplest method you can think of to handle cases of duplicated variants in the input?
+##What's the simplest method you can think of to handle cases of duplicated variants in the input?
 Variants should be put into a hash, so they won't be duplicated.
 
-- What optimizations would you pursue in your code if you had time? How would you prioritize your effort?
-Linting, CI/CD hooks and scripts, more tooltips/error handlers in CLI tool
+##What optimizations would you pursue in your code if you had time? How would you prioritize your effort?
+The answer to this is provided in [Next Steps](#next-steps) in order of priority

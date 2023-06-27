@@ -1,7 +1,7 @@
-from client import VariantAnnotationClient
-def main():
-    parser = argparse.ArgumentParser(prog="tvac")
-    parser.add_argument('filename')
+from .client import VariantAnnotationClient
+def cli_annotate_variants():
+    parser = argparse.ArgumentParser(prog="tvac-annotate-variants", description="Command line tool for annotating variants provided in a filename")
+    parser.add_argument('filename', description="Name of file with variants seperated by newlines")
     args = parser.parse_args()
     c = VariantAnnotationClient()
     annotations = c.annotate_file(args.filename)
