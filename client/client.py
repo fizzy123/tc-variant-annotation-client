@@ -7,7 +7,6 @@ class EnsemblError(Exception):
         # Call the base class constructor with the parameters it needs
         super().__init__(error_text)
             
-        # Now for your custom code...
         self.status_code = status_code
         self.error_text = error_text
 
