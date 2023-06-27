@@ -21,4 +21,4 @@ dependencies = [
 ]
 
 [project.scripts]
-tvac = "tvac.cli:cli_annotate_variants"
+tvac-annotate-variants = "tvac.cli:cli_annotate_variants"
