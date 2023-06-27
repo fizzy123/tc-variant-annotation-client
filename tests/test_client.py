@@ -5,7 +5,6 @@ from tests import util
 
 TEST_FILENAME = "variants.txt"
 
-
 TEST_URL = "https://test.com/{variant}"
 
 class TestVariantAnnotationClient(unittest.TestCase):

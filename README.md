@@ -21,7 +21,7 @@ print(tsv)
 
 As a command line tool:
 ```
-> tvac annotate_file variants.txt
+> tvac-annotate-variants variants.txt
 Variant NC_000001.11:g.40819893T>A Encountered Annotation Exception
 Exception:Annotation website returned bad response
 status_code:400
@@ -58,6 +58,8 @@ Here is a list of things that could potentially be deferred, with the best thing
 - Input validation
 - Bugs that can currently occur, but will not occur in the current use case
 - Security Bugs
+
+It's also meaningful to note that doing new things takes more time than doing things that the engineer is used to, or things that have already been done. This might affect the design of the overall application to be different, especially if we're developing for speed. In this case, we might focus on solutions where the engineer in question is particularly familiar, or on solutions where similar functionality has already been implemented elsewhere in the codebase and can easily be copy/pasted into the new code.
 
 ##What's the simplest method you can think of to handle cases of duplicated variants in the input?
 Variants should be put into a hash, so they won't be duplicated.
